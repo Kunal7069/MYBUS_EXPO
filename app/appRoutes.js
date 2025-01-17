@@ -343,7 +343,7 @@ router.post('/otp',async  (req, res) => {
         return res.status(400).json({ error: 'User already exists with this Phone Number' });
       }
 
-      const otp = Math.floor(100000 + Math.random() * 900000); // Ensures 6 digits
+      const otp = Math.floor(1000 + Math.random() * 9000); // Ensures 4 digits
 
       // Send the OTP in the response
       res.status(200).json({
