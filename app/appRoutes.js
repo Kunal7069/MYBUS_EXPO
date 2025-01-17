@@ -363,6 +363,37 @@ router.post('/otp',async  (req, res) => {
   }
 });  
 
+router.post('/login-otp',async  (req, res) => {
+  try {
+    const { phone } = req.body;
+    if (phone.length < 10) {
+      return res.status(400).json({ error: 'Mobile number must be at least 10 digits' });
+    }
+    const existingPhone = await db.collection("USERS").findOne({ phone });
+     if (existingPhone) {
+       const otp = Math.floor(1000 + Math.random() * 9000); // Ensures 4 digits
+
+      // Send the OTP in the response
+      res.status(200).json({
+          message: 'OTP generated successfully',
+          otp: otp,
+          existingPhone:existingPhone
+      });
+      }
+      else{
+           res.status(200).json({
+          message: 'Mobile Number Not Registered'
+      });
+      }
+          
+
+      
+  } catch (error) {
+      console.error('Error generating OTP:', error);
+      res.status(500).json({ error: 'Failed to generate OTP' });
+  }
+});  
+
 
   return router;  
 
