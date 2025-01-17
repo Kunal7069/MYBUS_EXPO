@@ -221,6 +221,8 @@ router.post("/token", async (req, res) => {
   // Signup API
   router.post('/signup', async (req, res) => {
     const { name, gender, email, phone } = req.body;
+    const ACCESS_TOKEN_SECRET = 'your_jwt_access_secret';
+    const REFRESH_TOKEN_SECRET = 'your_jwt_refresh_secret';
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ error: 'Invalid email format' });
@@ -246,8 +248,13 @@ router.post("/token", async (req, res) => {
       };
 
       const result = await db.collection("USERS").insertOne(newUser);
+      // Generate access token (expires in 1 hour)
+      const accessToken = jwt.sign({ userId: user._id }, ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
 
-      res.status(201).json({ message: 'User registered successfully', userId: result.insertedId });
+        // Generate refresh token (expires in 7 days)
+      const refreshToken = jwt.sign({ userId: user._id }, REFRESH_TOKEN_SECRET, { expiresIn: '1440h' });
+      res.status(201).json({ message: 'User registered successfully', userId: result.insertedId,accessToken,
+            refreshToken });
     } catch (error) {
       console.error('Error signing up:', error);
       res.status(500).json({ error: 'Error registering user' });
