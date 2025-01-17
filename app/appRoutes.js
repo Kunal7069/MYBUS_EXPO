@@ -249,10 +249,10 @@ router.post("/token", async (req, res) => {
 
       const result = await db.collection("USERS").insertOne(newUser);
       // Generate access token (expires in 1 hour)
-      const accessToken = jwt.sign({ userId: user._id }, ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
+      const accessToken = jwt.sign({ userId: result._id }, ACCESS_TOKEN_SECRET, { expiresIn: '7d' });
 
         // Generate refresh token (expires in 7 days)
-      const refreshToken = jwt.sign({ userId: user._id }, REFRESH_TOKEN_SECRET, { expiresIn: '1440h' });
+      const refreshToken = jwt.sign({ userId: result._id }, REFRESH_TOKEN_SECRET, { expiresIn: '1440h' });
       res.status(201).json({ message: 'User registered successfully', userId: result.insertedId,accessToken,
             refreshToken });
     } catch (error) {
