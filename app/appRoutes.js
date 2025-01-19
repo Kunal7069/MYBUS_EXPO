@@ -35,6 +35,16 @@ router.get("/get_bus_stations", async (req, res) => {
   }
 });
 
+router.get("/get_all_bus_stations", async (req, res) => {
+  try {
+    const collection = db.collection("BUS_STATIONS");
+    const result = await collection.find({}).toArray();
+    res.send(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting data", error });
+  }
+});
+
 router.get("/get_eloc", async (req, res) => {
   try {
     const collection = db.collection("BUS_STATION_ADDRESS");
